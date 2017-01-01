@@ -13,59 +13,59 @@ import Cocoa
 class GraphicalImageRender : VisualElementRenderer, VisualElementLayoutHandler {
     typealias RenderType = NSImage
     
-    func text(text: String, atPoint p: NSPoint, withStyle style: VisualStyle) {
-        guard let ctx = NSGraphicsContext.currentContext() else {return}
-        CGContextSaveGState(ctx.CGContext)
-        defer {CGContextRestoreGState(ctx.CGContext)}
+    func text(_ text: String, atPoint p: NSPoint, withStyle style: VisualStyle) {
+        guard let ctx = NSGraphicsContext.current() else {return}
+        ctx.cgContext.saveGState()
+        defer {ctx.cgContext.restoreGState()}
 
         let ns = text as NSString
         let font = style.displayFont()
-        ns.drawAtPoint(p, withAttributes: [NSFontAttributeName:font,NSForegroundColorAttributeName:NSColor.blackColor()])
+        ns.draw(at: p, withAttributes: [NSFontAttributeName:font,NSForegroundColorAttributeName:NSColor.black])
     }
     
-    func box(origin: NSPoint, size: NSSize, withStyle style: VisualStyle) {
-        guard let ctx = NSGraphicsContext.currentContext() else {return}
-        CGContextSaveGState(ctx.CGContext)
-        defer {CGContextRestoreGState(ctx.CGContext)}
+    func box(_ origin: NSPoint, size: NSSize, withStyle style: VisualStyle) {
+        guard let ctx = NSGraphicsContext.current() else {return}
+        ctx.cgContext.saveGState()
+        defer {ctx.cgContext.restoreGState()}
 
         let r = NSRect(origin: origin, size: size)
         let p = NSBezierPath(rect: r)
-        NSColor.blackColor().setStroke()
+        NSColor.black.setStroke()
         p.lineWidth = 1
         p.stroke()
     }
         
-    func shape(type: ShapeType, frame f: NSRect, withStyle style: VisualStyle) {
-        guard let ctx = NSGraphicsContext.currentContext() else {return}
-        CGContextSaveGState(ctx.CGContext)
-        defer {CGContextRestoreGState(ctx.CGContext)}
+    func shape(_ type: ShapeType, frame f: NSRect, withStyle style: VisualStyle) {
+        guard let ctx = NSGraphicsContext.current() else {return}
+        ctx.cgContext.saveGState()
+        defer {ctx.cgContext.restoreGState()}
         
         switch type {
-        case .Empty: ()
+        case .empty: ()
 
-        case let .Path(pts) :
+        case let .path(pts) :
             switch pts.count {
             case 0: return  // no path
             case 1 : return // single point
             case let n :
                 let p = NSBezierPath()
                 p.lineWidth = 1.0
-                p.moveToPoint(pts[0] + f.origin)
+                p.move(to: pts[0] + f.origin)
                 for i in 1..<n {
-                    p.lineToPoint(pts[i] + f.origin)
+                    p.line(to: pts[i] + f.origin)
                 }
                 
                 p.stroke()
             }
             
-        case let .Curve(from,cp1,cp2,to) :
+        case let .curve(from,cp1,cp2,to) :
             let p = NSBezierPath()
             p.lineWidth = 1
-            p.moveToPoint(from + f.origin)
-            p.curveToPoint(to + f.origin, controlPoint1: cp1 + f.origin, controlPoint2: cp2 + f.origin)
+            p.move(to: from + f.origin)
+            p.curve(to: to + f.origin, controlPoint1: cp1 + f.origin, controlPoint2: cp2 + f.origin)
             p.stroke()
             
-        case let .ComplexPath(path) :
+        case let .complexPath(path) :
             let p = path(f,style)
             p.stroke()
         }

@@ -18,22 +18,22 @@ extension VisualPart {
     
     var frame : ElementSize {
         switch self {
-        case let .Text(_,frame,_) : return frame
+        case let .text(_,frame,_) : return frame
         case let .Spacer(frame) : return frame
         case let .Sequence(_,frame,_) : return frame
         case let .Padded(_,_,_,_,_,frame,_) : return frame
         case let .Pair(_,_,_,frame,_) : return frame
         case let .Stack(_,frame,_) : return frame
-        case let .Shape(_,frame,_) : return frame 
+        case let .shape(_,frame,_) : return frame 
         }
     }
     
-    static func line(sp: NSPoint, ep: NSPoint, fr: ElementSize, withStyle style : VisualStyle) -> VisualPart {
-        let lns = ShapeType.Path(points: [sp,ep])
-        return VisualPart.Shape(type: lns, frame: fr, style: style)
+    static func line(_ sp: NSPoint, ep: NSPoint, fr: ElementSize, withStyle style : VisualStyle) -> VisualPart {
+        let lns = ShapeType.path(points: [sp,ep])
+        return VisualPart.shape(type: lns, frame: fr, style: style)
     }
     
-    static func sequence(parts: [VisualPart], withStyle style: VisualStyle, withSpacing spc: CGFloat? = .None) -> VisualPart {
+    static func sequence(_ parts: [VisualPart], withStyle style: VisualStyle, withSpacing spc: CGFloat? = .none) -> VisualPart {
         guard parts.count > 0 else {return VisualPart.Sequence(items: [], frame: ElementSize.zero , style: style)}
         
         var elements = parts
@@ -43,7 +43,7 @@ extension VisualPart {
         }
         
         let font = style.displayFont()
-        let (w,a,b) = elements.reduce((0,0,0), combine: { (a, p) -> (CGFloat,CGFloat,CGFloat) in
+        let (w,a,b) = elements.reduce((0,0,0), { (a, p) -> (CGFloat,CGFloat,CGFloat) in
             let f = p.frame
             let asc = f.height - f.baseline
             return (a.0 + f.width, max(a.1,asc), max(a.2,f.baseline))
@@ -53,9 +53,9 @@ extension VisualPart {
         return VisualPart.Sequence(items: elements, frame: size, style: style)
     }
     
-    static func stack(parts : [VisualPart], withStyle style: VisualStyle) -> VisualPart {
+    static func stack(_ parts : [VisualPart], withStyle style: VisualStyle) -> VisualPart {
         func height(ofSlice s: Range<Int>) -> CGFloat {
-            return parts[s].reduce(0, combine: { (a, p) -> CGFloat in
+            return parts[s].reduce(0, { (a, p) -> CGFloat in
                 let f = p.frame
                 return a + f.height
             })
@@ -66,7 +66,7 @@ extension VisualPart {
         case 1: return parts[0]
         case let n:
             let font = style.displayFont()
-            let (w,h) = parts.reduce((0,0), combine: { (a, p) -> (CGFloat,CGFloat) in
+            let (w,h) = parts.reduce((0,0), { (a, p) -> (CGFloat,CGFloat) in
                 let f = p.frame
                 return (max(a.0, f.width), a.1 + f.height)
             })
@@ -78,7 +78,7 @@ extension VisualPart {
             }
             else {
                 let f = parts[mid].frame
-                bs = height(ofSlice: mid.successor()..<n) + f.baseline
+                bs = height(ofSlice: (mid + 1)..<n) + f.baseline
             }
             
             let frame = ElementSize(width: w, height: h, realWidth: w, baseline: bs, xHeight: font.xHeight)
@@ -86,11 +86,11 @@ extension VisualPart {
         }
     }
     
-    static func spacer(width: CGFloat, height: CGFloat) -> VisualPart {
+    static func spacer(_ width: CGFloat, height: CGFloat) -> VisualPart {
         return VisualPart.Spacer(frame: ElementSize(width: width, height: height, realWidth: width, baseline: 0, xHeight: 0))
     }
     
-    static func padded(item: VisualPart, left: CGFloat, right: CGFloat, top: CGFloat, bottom: CGFloat, style: VisualStyle) -> VisualPart {
+    static func padded(_ item: VisualPart, left: CGFloat, right: CGFloat, top: CGFloat, bottom: CGFloat, style: VisualStyle) -> VisualPart {
         let f = item.frame
         let w = f.width + left + right
         let h = f.height + top + bottom
@@ -99,28 +99,28 @@ extension VisualPart {
         return VisualPart.Padded(item: item, left: left, right: right, top: top, bottom: bottom, frame: frame, style: style)
     }
     
-    static func pair(item: VisualPart, positioning pos: PairPositioning, base: VisualPart, withStyle style: VisualStyle) -> VisualPart {
+    static func pair(_ item: VisualPart, positioning pos: PairPositioning, base: VisualPart, withStyle style: VisualStyle) -> VisualPart {
         let bf = base.frame
         let of = item.frame
         let h = bf.height + of.height
         let w = max(bf.width, of.width)
         switch pos {
-        case .Over :
+        case .over :
             let frame = ElementSize(width: w, height: h, realWidth: w, baseline: bf.baseline, xHeight: bf.xHeight)
             return VisualPart.Pair(item: item, positioned: pos, baselined: base, frame: frame, style: style)
 
-        case .Under:
+        case .under:
             let frame = ElementSize(width: w, height: h, realWidth: w, baseline: bf.baseline + of.height, xHeight: bf.xHeight)
             return VisualPart.Pair(item: item, positioned: pos, baselined: base, frame: frame, style: style)
         }
     }
     
-    static func under(item: VisualPart, base: VisualPart, withStyle style: VisualStyle) -> VisualPart {
-        return pair(item, positioning: .Under, base: base, withStyle: style)
+    static func under(_ item: VisualPart, base: VisualPart, withStyle style: VisualStyle) -> VisualPart {
+        return pair(item, positioning: .under, base: base, withStyle: style)
     }
     
-    static func over(item: VisualPart, base: VisualPart, withStyle style: VisualStyle) -> VisualPart {
-        return pair(item, positioning: .Over, base: base, withStyle: style)
+    static func over(_ item: VisualPart, base: VisualPart, withStyle style: VisualStyle) -> VisualPart {
+        return pair(item, positioning: .over, base: base, withStyle: style)
     }
 
 }
@@ -129,19 +129,19 @@ extension VisualPart {
 /// Modify the Visual Styling (simply allow font size change at the moment)
 extension VisualStyle {
     // frame the element
-    func framed(f: Bool) -> VisualStyle {
+    func framed(_ f: Bool) -> VisualStyle {
         return VisualStyle(fontSize: self.fontSize, drawFrame: f, inline: self.inline, italic: self.italic, bold: self.bold)
     }
     
-    func italisised(i: Bool) -> VisualStyle {
+    func italisised(_ i: Bool) -> VisualStyle {
         return VisualStyle(fontSize: self.fontSize, drawFrame: self.drawFrame, inline: self.inline, italic: i, bold: self.bold)
     }
     
-    func bolded(b: Bool) -> VisualStyle {
+    func bolded(_ b: Bool) -> VisualStyle {
         return VisualStyle(fontSize: self.fontSize, drawFrame: self.drawFrame, inline: self.inline, italic: self.italic, bold: b)
     }
     
-    func inlined(i : Bool) -> VisualStyle {
+    func inlined(_ i : Bool) -> VisualStyle {
         return VisualStyle(fontSize: self.fontSize, drawFrame: self.drawFrame, inline: i, italic: self.italic, bold: self.bold)
     }
 
@@ -159,18 +159,18 @@ extension VisualStyle {
     func displayFont() -> NSFont {
         var traits : NSFontTraitMask = NSFontTraitMask()
         if italic {
-            traits.insert(NSFontTraitMask.ItalicFontMask)
+            traits.insert(NSFontTraitMask.italicFontMask)
         }
         
         if bold {
-            traits.insert(NSFontTraitMask.BoldFontMask)
+            traits.insert(NSFontTraitMask.boldFontMask)
         }
         
-        let fm = NSFontManager.sharedFontManager()
-        if let fnt = fm.fontWithFamily("Times New Roman", traits: traits, weight: 1, size: fontSize) {
+        let fm = NSFontManager.shared()
+        if let fnt = fm.font(withFamily: "Times New Roman", traits: traits, weight: 1, size: fontSize) {
             return fnt
         }
         
-        return NSFont.systemFontOfSize(fontSize)
+        return NSFont.systemFont(ofSize: fontSize)
     }
 }

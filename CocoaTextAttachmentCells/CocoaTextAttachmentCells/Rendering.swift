@@ -13,19 +13,19 @@ protocol VisualElementRenderer {
     associatedtype RenderType
     func render(item i: VisualPart, withStyle style: VisualStyle) -> (RenderType,ElementSize)
     
-    func text(text: String, atPoint p: NSPoint, withStyle style: VisualStyle)
-    func box(origin: NSPoint, size: NSSize, withStyle style: VisualStyle)
-    func shape(type: ShapeType, frame: NSRect, withStyle style: VisualStyle)
+    func text(_ text: String, atPoint p: NSPoint, withStyle style: VisualStyle)
+    func box(_ origin: NSPoint, size: NSSize, withStyle style: VisualStyle)
+    func shape(_ type: ShapeType, frame: NSRect, withStyle style: VisualStyle)
 }
 
 
 protocol VisualElementLayoutHandler {
-    func layout(part: VisualPart, x: CGFloat, y: CGFloat, containerSize cs: ElementSize, withStyle style: VisualStyle)
+    func layout(_ part: VisualPart, x: CGFloat, y: CGFloat, containerSize cs: ElementSize, withStyle style: VisualStyle)
 }
 
 
 extension VisualElementLayoutHandler where Self : VisualElementRenderer {
-    func layout(part: VisualPart, x: CGFloat, y: CGFloat, containerSize cs: ElementSize, withStyle style: VisualStyle) {
+    func layout(_ part: VisualPart, x: CGFloat, y: CGFloat, containerSize cs: ElementSize, withStyle style: VisualStyle) {
         if style.drawFrame {
             let frame = part.frame
             box(NSPoint(x: x, y: y), size: NSSize(width: frame.width, height: frame.height), withStyle: style)
@@ -34,7 +34,7 @@ extension VisualElementLayoutHandler where Self : VisualElementRenderer {
         switch part {
         case .Spacer(_) : () // Spacer has no layout
 
-        case let .Text(t,_,style) :
+        case let .text(t,_,style) :
             text(t, atPoint: NSPoint(x: x, y: y), withStyle: style)
             
         case let .Sequence(items,frame,style):
@@ -54,10 +54,10 @@ extension VisualElementLayoutHandler where Self : VisualElementRenderer {
 
         case let .Pair(item,position,base,frame,style) :
             switch position {
-            case .Over:
+            case .over:
                 layout(base, x: x, y: y, containerSize: frame, withStyle: style)
                 layout(item, x: x, y: y + base.frame.height, containerSize: frame, withStyle: style)
-            case .Under:
+            case .under:
                 let of = item.frame
                 layout(base, x: x, y: y + of.height, containerSize: frame, withStyle: style)
                 layout(item, x: x, y: y, containerSize: frame, withStyle: style)
@@ -67,12 +67,12 @@ extension VisualElementLayoutHandler where Self : VisualElementRenderer {
         case let .Stack(items,frame,style) :
             // items top to bottom
             var ypos = y
-            for i in items.reverse() {
+            for i in items.reversed() {
                 layout(i, x: x, y: ypos, containerSize: frame, withStyle: style)
                 ypos += i.frame.height
             }
             
-        case let .Shape(type,frame,style) :
+        case let .shape(type,frame,style) :
             let b = NSRect(x: x, y: y, width: frame.width, height: frame.height)
             shape(type, frame: b, withStyle: style)
         }

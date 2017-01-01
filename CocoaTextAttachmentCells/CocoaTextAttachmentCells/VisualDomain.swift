@@ -27,26 +27,26 @@ struct VisualStyle {
 }
 
 enum ShapeType {
-    case Empty
-    case Path(points: [NSPoint])
-    case Curve(from: NSPoint, cp1: NSPoint, cp2: NSPoint, to: NSPoint)
-    case ComplexPath(f : (NSRect,VisualStyle) -> NSBezierPath)
+    case empty
+    case path(points: [NSPoint])
+    case curve(from: NSPoint, cp1: NSPoint, cp2: NSPoint, to: NSPoint)
+    case complexPath(f : (NSRect,VisualStyle) -> NSBezierPath)
 }
 
 enum PairPositioning {
-    case Over
-    case Under
+    case over
+    case under
 }
 
 /// The set of elements which can be rendered
 indirect enum VisualPart {
-    case Text(t: String, frame: ElementSize, style: VisualStyle)
+    case text(t: String, frame: ElementSize, style: VisualStyle)
     case Spacer(frame: ElementSize)
     case Sequence(items : [VisualPart], frame: ElementSize, style: VisualStyle)
     case Padded(item: VisualPart, left : CGFloat, right: CGFloat, top: CGFloat, bottom: CGFloat, frame: ElementSize, style: VisualStyle)
     case Pair(item: VisualPart, positioned: PairPositioning, baselined: VisualPart, frame: ElementSize, style: VisualStyle)
     case Stack(items: [VisualPart], frame: ElementSize, style: VisualStyle)
-    case Shape(type: ShapeType, frame: ElementSize, style: VisualStyle)
+    case shape(type: ShapeType, frame: ElementSize, style: VisualStyle)
 }
 
 /// Protocol for domain types which can be visualised.

@@ -9,7 +9,7 @@
 import Foundation
 
 extension Array {
-    func intersperse(e : Element) -> [Element] {
+    func intersperse(_ e : Element) -> [Element] {
         return self.reduce([]) { (a, p) -> [Element] in
             guard !a.isEmpty else {return [p]}
             return a + [e,p]

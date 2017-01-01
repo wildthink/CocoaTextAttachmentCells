@@ -9,8 +9,8 @@
 import Foundation
 
 enum MathBracketSymbol {
-    case LParen
-    case RParen
+    case lParen
+    case rParen
 }
 
 enum FunctionType : String {
@@ -103,23 +103,23 @@ enum FunctionType : String {
 }
 
 enum MathSymbolType {
-    case Sum
-    case Integral
+    case sum
+    case integral
 }
 
 enum MathSymbolContentType : Equatable {
-    case Text(text: String)
-    case Operator(op: String)
-    case Symbol(mode: MathSymbolType)
-    case Function(type: FunctionType)
+    case text(text: String)
+    case `operator`(op: String)
+    case symbol(mode: MathSymbolType)
+    case function(type: FunctionType)
 }
 
 func ==(l: MathSymbolContentType, r: MathSymbolContentType) -> Bool {
     switch (l,r) {
-    case let (.Text(text: t1), .Text(text: t2)) : return t1 == t2
-    case let (.Operator(op: o1), .Operator(op: o2)) : return o1 == o2
-    case let (.Symbol(mode: m1), .Symbol(mode: m2)) : return m1 == m2
-    case let (.Function(type: f1), .Function(type: f2)) : return f1 == f2
+    case let (.text(text: t1), .text(text: t2)) : return t1 == t2
+    case let (.operator(op: o1), .operator(op: o2)) : return o1 == o2
+    case let (.symbol(mode: m1), .symbol(mode: m2)) : return m1 == m2
+    case let (.function(type: f1), .function(type: f2)) : return f1 == f2
     case _ : return false
     }
 }
@@ -135,11 +135,11 @@ struct MathSymbol {
         self.symSuperscript = symSuperscript
     }
     
-    func shouldInline(inline : Bool) -> Bool  {
+    func shouldInline(_ inline : Bool) -> Bool  {
         switch self.symbol {
-        case let .Function(ft) : return inline ? true : ft.acceptsLimits
-        case .Symbol(.Integral) : return inline
-        case .Symbol(.Sum) : return inline
+        case let .function(ft) : return inline ? true : ft.acceptsLimits
+        case .symbol(.integral) : return inline
+        case .symbol(.sum) : return inline
         case _ : return true
         }
     }
@@ -147,8 +147,8 @@ struct MathSymbol {
 
 
 indirect enum MathExpr {
-    case Symbol(sym: MathSymbol)
-    case Sequence(exprs: [MathExpr])
+    case symbol(sym: MathSymbol)
+    case sequence(exprs: [MathExpr])
     case Fraction(numerator: MathExpr, denominator: MathExpr)
     case Binomial(n: MathExpr, k: MathExpr)
     case Bracketed(left: MathBracketSymbol, expr: MathExpr, right: MathBracketSymbol)
@@ -157,27 +157,27 @@ indirect enum MathExpr {
     init(value: String) {
         let ct : MathSymbolContentType
         if let fn = FunctionType(name: value) {
-            ct = MathSymbolContentType.Function(type: fn)
+            ct = MathSymbolContentType.function(type: fn)
         }
         else if value == "sum" {
-            ct = MathSymbolContentType.Symbol(mode: .Sum)
+            ct = MathSymbolContentType.symbol(mode: .sum)
         }
         else if value == "int" {
-            ct = MathSymbolContentType.Symbol(mode: .Integral)
+            ct = MathSymbolContentType.symbol(mode: .integral)
         }
         else if Set(arrayLiteral: "+","-","/","*","=").contains(value) {
-            ct = MathSymbolContentType.Operator(op: value)
+            ct = MathSymbolContentType.operator(op: value)
         }
         else {
-            ct = MathSymbolContentType.Text(text: value)
+            ct = MathSymbolContentType.text(text: value)
         }
-        let a = MathSymbol(symbol: ct , symSubscript: .None, symSuperscript: .None)
-        self = MathExpr.Symbol(sym: a)
+        let a = MathSymbol(symbol: ct , symSubscript: .none, symSuperscript: .none)
+        self = MathExpr.symbol(sym: a)
     }
 }
 
 
-extension MathExpr : StringLiteralConvertible {
+extension MathExpr : ExpressibleByStringLiteral {
     typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
     typealias UnicodeScalarLiteralType = StringLiteralType
     
@@ -194,9 +194,9 @@ extension MathExpr : StringLiteralConvertible {
     }
 }
 
-extension MathExpr : ArrayLiteralConvertible {
+extension MathExpr : ExpressibleByArrayLiteral {
     init(arrayLiteral elements: MathExpr...) {
-        self = MathExpr.Sequence(exprs: elements)
+        self = MathExpr.sequence(exprs: elements)
     }
 }
 

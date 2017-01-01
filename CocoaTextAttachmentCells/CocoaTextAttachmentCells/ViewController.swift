@@ -14,8 +14,8 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let font = NSFont.systemFontOfSize(18)
-        let attr = NSMutableAttributedString(string: "", attributes: [NSForegroundColorAttributeName:NSColor.blackColor(), NSFontAttributeName:font])
+        let font = NSFont.systemFont(ofSize: 18)
+        let attr = NSMutableAttributedString(string: "", attributes: [NSForegroundColorAttributeName:NSColor.black, NSFontAttributeName:font])
 
         // Build the display element part
         let mathStyle = VisualStyle(fontSize: 18, drawFrame: false, inline: false, italic: false, bold: false)
@@ -34,22 +34,22 @@ class ViewController: NSViewController {
         let sch = MathEquations.schrodinger()
         let inf = MathEquations.infoTheory()
         let chaos = MathEquations.chaos()
-        let bs = MathEquations.blackScholes()
+//        let bs = MathEquations.blackScholes() jmj
         let four = MathEquations.fourierTransform()
         
-        for (pre,ex,post) in [py,logs,calc,log, sqmone, poly, nd, we, four, ns, therm, rel, sch, inf, chaos, bs] {
+        for (pre,ex,post) in [py,logs,calc,log, sqmone, poly, nd, we, four, ns, therm, rel, sch, inf, chaos /*, bs jmj */] {
             let expr = ex.build(withStyle: mathStyle)
             let inline = TextDisplayCell(item: expr, style: mathStyle, usingRenderer: GraphicalImageRender())
             let cell = NSTextAttachment()
             cell.attachmentCell = inline
             let cellstr = NSAttributedString(attachment: cell)
             
-            attr.appendAttributedString(pre)
-            attr.appendAttributedString(cellstr)
-            attr.appendAttributedString(post)
+            attr.append(pre)
+            attr.append(cellstr)
+            attr.append(post)
         }
         
-        editor.textStorage?.replaceCharactersInRange(NSRange(location: 0, length: 0), withAttributedString: attr)
+        editor.textStorage?.replaceCharacters(in: NSRange(location: 0, length: 0), with: attr)
     }
 
    
