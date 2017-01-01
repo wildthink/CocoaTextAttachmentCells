@@ -2,6 +2,13 @@
 
 This project works through an example Cocoa project which creates ***NSTextAttachment*** cells which can be embedded within *attributed text views*. Whilst aimed at *OS X* Cocoa based applications the techniques presented here are equally applicable (in most places) to *iOS* apps.
 
+See Related Articles from [Swiftly Does It](http://www.swift-development.com)
+
+- [Part 1: Basic Attachments](http://swift-development.com/cocoa-text-attachment-cells/)
+- [Part 2: Protocol Building for Attachments](http://swift-development.com/cocoa-text-attachment-cells/)
+- [Part 3: Extending the Visual Language](http://swift-development.com/attachment-cells-part-3/)
+- [Part 4: Attachment Cells - Equations](http://www.swift-development.com/attachment-cells-maths-formula/)
+
 
 
 
