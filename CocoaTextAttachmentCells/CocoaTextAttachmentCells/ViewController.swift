@@ -15,7 +15,7 @@ class ViewController: NSViewController {
         super.viewDidLoad()
         
         let font = NSFont.systemFont(ofSize: 18)
-        let attr = NSMutableAttributedString(string: "", attributes: [NSForegroundColorAttributeName:NSColor.black, NSFontAttributeName:font])
+        let attr = NSMutableAttributedString(string: "", attributes: [NSAttributedStringKey.foregroundColor:NSColor.black, NSAttributedStringKey.font:font])
 
         // Build the display element part
         let mathStyle = VisualStyle(fontSize: 18, drawFrame: false, inline: false, italic: false, bold: false)

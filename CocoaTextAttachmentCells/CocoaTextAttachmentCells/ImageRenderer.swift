@@ -14,17 +14,17 @@ class GraphicalImageRender : VisualElementRenderer, VisualElementLayoutHandler {
     typealias RenderType = NSImage
     
     func text(_ text: String, atPoint p: NSPoint, withStyle style: VisualStyle) {
-        guard let ctx = NSGraphicsContext.current() else {return}
+        guard let ctx = NSGraphicsContext.current else {return}
         ctx.cgContext.saveGState()
         defer {ctx.cgContext.restoreGState()}
 
         let ns = text as NSString
         let font = style.displayFont()
-        ns.draw(at: p, withAttributes: [NSFontAttributeName:font,NSForegroundColorAttributeName:NSColor.black])
+        ns.draw(at: p, withAttributes: [NSAttributedStringKey.font:font,NSAttributedStringKey.foregroundColor:NSColor.black])
     }
     
     func box(_ origin: NSPoint, size: NSSize, withStyle style: VisualStyle) {
-        guard let ctx = NSGraphicsContext.current() else {return}
+        guard let ctx = NSGraphicsContext.current else {return}
         ctx.cgContext.saveGState()
         defer {ctx.cgContext.restoreGState()}
 
@@ -36,7 +36,7 @@ class GraphicalImageRender : VisualElementRenderer, VisualElementLayoutHandler {
     }
         
     func shape(_ type: ShapeType, frame f: NSRect, withStyle style: VisualStyle) {
-        guard let ctx = NSGraphicsContext.current() else {return}
+        guard let ctx = NSGraphicsContext.current else {return}
         ctx.cgContext.saveGState()
         defer {ctx.cgContext.restoreGState()}
         

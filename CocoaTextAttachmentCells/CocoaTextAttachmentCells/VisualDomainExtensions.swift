@@ -11,7 +11,7 @@ import Cocoa
 /// Helper to provide information on visual elements
 extension VisualPart {
     static func textSize(forText symbol: String, withFont font: NSFont) -> ElementSize {
-        let displaySize = symbol.size(withAttributes: [NSFontAttributeName:font], constrainedTo: NSSize(width: 5000, height: 5000), padding: 0.0)
+        let displaySize = symbol.size(withAttributes: [NSAttributedStringKey.font: font], constrainedTo: NSSize(width: 5000, height: 5000), padding: 0.0)
         let h = max(displaySize.height, font.ascender + fabs(font.descender))
         return ElementSize(width: displaySize.width, height: h, realWidth: displaySize.width, baseline: fabs(font.descender), xHeight: font.xHeight)
     }
@@ -166,7 +166,7 @@ extension VisualStyle {
             traits.insert(NSFontTraitMask.boldFontMask)
         }
         
-        let fm = NSFontManager.shared()
+        let fm = NSFontManager.shared
         if let fnt = fm.font(withFamily: "Times New Roman", traits: traits, weight: 1, size: fontSize) {
             return fnt
         }
