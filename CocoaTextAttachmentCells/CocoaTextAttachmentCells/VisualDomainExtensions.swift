@@ -11,9 +11,9 @@ import Cocoa
 /// Helper to provide information on visual elements
 extension VisualPart {
     static func textSize(forText symbol: String, withFont font: NSFont) -> ElementSize {
-        let displaySize = symbol.size(withAttributes: [NSAttributedStringKey.font: font], constrainedTo: NSSize(width: 5000, height: 5000), padding: 0.0)
-        let h = max(displaySize.height, font.ascender + fabs(font.descender))
-        return ElementSize(width: displaySize.width, height: h, realWidth: displaySize.width, baseline: fabs(font.descender), xHeight: font.xHeight)
+        let displaySize = symbol.size(withAttributes: [NSAttributedString.Key.font: font], constrainedTo: NSSize(width: 5000, height: 5000), padding: 0.0)
+        let h = max(displaySize.height, font.ascender + abs(font.descender))
+        return ElementSize(width: displaySize.width, height: h, realWidth: displaySize.width, baseline: abs(font.descender), xHeight: font.xHeight)
     }
     
     var frame : ElementSize {

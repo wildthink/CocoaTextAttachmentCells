@@ -20,7 +20,7 @@ class GraphicalImageRender : VisualElementRenderer, VisualElementLayoutHandler {
 
         let ns = text as NSString
         let font = style.displayFont()
-        ns.draw(at: p, withAttributes: [NSAttributedStringKey.font:font,NSAttributedStringKey.foregroundColor:NSColor.black])
+        ns.draw(at: p, withAttributes: [NSAttributedString.Key.font:font,NSAttributedString.Key.foregroundColor:NSColor.black])
     }
     
     func box(_ origin: NSPoint, size: NSSize, withStyle style: VisualStyle) {

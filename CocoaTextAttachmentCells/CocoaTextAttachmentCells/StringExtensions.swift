@@ -9,7 +9,7 @@
 import Cocoa
 
 extension String {
-    func size(withAttributes attrs: [NSAttributedStringKey:AnyObject], constrainedTo box: NSSize, padding: CGFloat = 0.0) -> NSSize {
+    func size(withAttributes attrs: [NSAttributedString.Key:AnyObject], constrainedTo box: NSSize, padding: CGFloat = 0.0) -> NSSize {
         let storage = NSTextStorage(string: self)
         let container = NSTextContainer(containerSize: NSSize(width: box.width, height: box.height))
         let layout = NSLayoutManager()
